@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrafficGuard — Détection d'Infractions aux Panneaux Stop</title>
+
+  <!-- Polices Google : Sora (titres) + Inter (texte) + JetBrains Mono (données) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- Halo lumineux décoratif en arrière-plan -->
+<div class="halo halo-1"></div>
+<div class="halo halo-2"></div>
+
+<div class="conteneur">
+
+  <!-- ========== EN-TÊTE ========== -->
+  <header>
+    <div class="marque">
+      <div class="marque-logo">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8.5 2h7L22 8.5v7L15.5 22h-7L2 15.5v-7L8.5 2z" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="marque-nom">Traffic<span>Guard</span></h1>
+        <div class="marque-tagline">Détection intelligente des infractions au Stop</div>
+      </div>
+    </div>
+
+    <div class="badge-statut" id="badge-statut">
+      <span class="point-statut" id="point-statut"></span>
+      <span id="texte-statut">En attente</span>
+    </div>
+  </header>
+
+  <!-- ========== CORPS PRINCIPAL ========== -->
+  <main class="grille">
+
+    <!-- ===== COLONNE GAUCHE : VISUALISATION ===== -->
+    <section class="colonne-gauche">
+
+      <div class="bloc-titre">
+        <span class="puce"></span>
+        <h2>Flux analysé</h2>
+        <span class="mode-actif" id="mode-actif">—</span>
+      </div>
+
+      <!-- Cadre d'affichage de la vidéo / image -->
+      <div class="ecran" id="ecran">
+
+        <img id="media-rendu" alt="Résultat de l'analyse" />
+
+        <!-- Écran d'accueil (avant toute analyse) -->
+        <div class="ecran-vide" id="ecran-vide">
+          <div class="ecran-vide-icone">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+              <polygon points="10 8 15 10.5 10 13 10 8" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="ecran-vide-titre">Aucun média chargé</div>
+          <div class="ecran-vide-texte">
+            Choisissez une vidéo ou une image,<br />
+            puis lancez l'analyse.
+          </div>
+        </div>
+
+        <!-- Bannière d'alerte (apparaît lors d'une infraction) -->
+        <div class="alerte" id="alerte">
+          <span class="alerte-point"></span>
+          <span>INFRACTION DÉTECTÉE — arrêt non respecté</span>
+        </div>
+
+        <!-- Barre de progression de la vidéo -->
+        <div class="barre-video" id="barre-video">
+          <div class="barre-video-jauge" id="barre-video-jauge"></div>
+        </div>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div class="erreur" id="erreur"></div>
+
+      <!-- ===== PANNEAU DE CONTRÔLE ===== -->
+      <div class="controles">
+
+        <div class="controles-entete">
+          <span class="etiquette">Source à analyser</span>
+          <div class="bascule" id="bascule">
+            <button class="bascule-btn actif" id="btn-mode-video" data-mode="video">Vidéo</button>
+            <button class="bascule-btn" id="btn-mode-image" data-mode="image">Image</button>
+          </div>
+        </div>
+
+        <!-- Zone de dépôt de fichier -->
+        <label class="depot" id="depot">
+          <input type="file" id="input-fichier" accept="video/*" />
+          <div class="depot-icone" id="depot-icone">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+          </div>
+          <div class="depot-texte" id="depot-texte">
+            Cliquez pour choisir une vidéo
+          </div>
+          <div class="depot-formats" id="depot-formats">
+            MP4, AVI, MOV, MKV
+          </div>
+          <div class="depot-nom" id="depot-nom"></div>
+        </label>
+
+        <!-- Barre de progression de l'upload -->
+        <div class="upload-barre" id="upload-barre">
+          <div class="upload-jauge" id="upload-jauge"></div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="boutons">
+          <button class="btn btn-principal" id="btn-lancer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4" /></svg>
+            <span id="btn-lancer-texte">Lancer l'analyse</span>
+          </button>
+          <button class="btn btn-secondaire" id="btn-pause" disabled>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="4" y="4" width="4" height="16" rx="1" /><rect x="16" y="4" width="4" height="16" rx="1" /></svg>
+            <span id="btn-pause-texte">Pause</span>
+          </button>
+          <button class="btn btn-secondaire" id="btn-stop">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2" /></svg>
+            Arrêter
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COLONNE DROITE : TABLEAU DE BORD ===== -->
+    <aside class="colonne-droite">
+
+      <!-- Carte panneau Stop -->
+      <div class="carte carte-stop" id="carte-stop">
+        <div class="carte-stop-icone" id="carte-stop-icone">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+            <path d="M8.5 2h7L22 8.5v7L15.5 22h-7L2 15.5v-7L8.5 2z" />
+          </svg>
+        </div>
+        <div>
+          <div class="carte-stop-titre" id="carte-stop-titre">Panneau Stop</div>
+          <div class="carte-stop-sous" id="carte-stop-sous">
+            Aucun panneau détecté
+          </div>
+        </div>
+      </div>
+
+      <!-- Compteurs -->
+      <div class="bloc-titre">
+        <span class="puce"></span>
+        <h2>Bilan</h2>
+      </div>
+      <div class="stats">
+        <div class="stat stat-danger">
+          <div class="stat-chiffre" id="stat-infractions">0</div>
+          <div class="stat-label">Infractions</div>
+        </div>
+        <div class="stat stat-succes">
+          <div class="stat-chiffre" id="stat-respectees">0</div>
+          <div class="stat-label">Respectées</div>
+        </div>
+      </div>
+
+      <!-- Véhicules suivis en direct -->
+      <div class="mini-stat">
+        <span class="mini-stat-label">Véhicules suivis</span>
+        <span class="mini-stat-valeur" id="stat-vehicules">0</span>
+      </div>
+
+      <!-- Historique -->
+      <div class="bloc-titre">
+        <span class="puce"></span>
+        <h2>Historique</h2>
+      </div>
+      <div class="carte historique" id="historique">
+        <div class="historique-vide" id="historique-vide">
+          Aucun événement pour l'instant
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <footer>
+    TrafficGuard — Projet de Fin d'Études · Licence Génie Informatique · 2025–2026
+  </footer>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

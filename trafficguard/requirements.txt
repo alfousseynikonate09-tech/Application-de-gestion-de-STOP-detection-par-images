@@ -1,0 +1,15 @@
+# ============================================================
+# requirements.txt - Bibliotheques Python necessaires
+# Projet : TrafficGuard
+# ------------------------------------------------------------
+# Installation : pip install -r requirements.txt
+# ============================================================
+
+flask==3.0.3                  # serveur web
+ultralytics==8.3.0            # YOLOv8 + tracker ByteTrack
+opencv-python-headless==4.10.0.84  # lecture video / traitement d'image
+numpy==1.26.4                 # calculs sur les matrices d'images
+lapx                          # algorithme requis par le tracker ByteTrack (remplace lap pour eviter les erreurs C++)
+torch>=2.3.0,!=2.4.0          # moteur de calcul de YOLO
+torchvision>=0.18.0           # complement de torch pour la vision
+gunicorn==22.0.0              # serveur de production (deploiement)

@@ -1,0 +1,664 @@
+/* ============================================================
+   style.css - Feuille de styles de TrafficGuard
+   Projet : Detection d'Infractions aux Panneaux Stop
+   ------------------------------------------------------------
+   Theme : sombre, contraste fort, accent rouge "signalisation".
+   Polices : Sora (titres), Inter (texte), JetBrains Mono (donnees).
+   ============================================================ */
+
+/* ---- Variables : toutes les couleurs au meme endroit ---- */
+:root {
+  --fond:        #0a0c10;
+  --fond-2:      #11141c;
+  --surface:     #161a24;
+  --surface-2:   #1d2230;
+  --bordure:     rgba(255, 255, 255, 0.08);
+  --bordure-vive:rgba(255, 255, 255, 0.16);
+
+  --rouge:       #ff3b47;
+  --rouge-sombre:#c8262f;
+  --vert:        #25d366;
+  --orange:      #ff9f40;
+  --bleu:        #4ea8ff;
+
+  --texte:       #eef0f5;
+  --texte-doux:  #9aa3b4;
+  --texte-faible:#5b6577;
+
+  --titre:  'Sora', sans-serif;
+  --corps:  'Inter', sans-serif;
+  --mono:   'JetBrains Mono', monospace;
+
+  --rayon:   16px;
+  --rayon-s: 11px;
+}
+
+/* ---- Reinitialisation ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--fond);
+  color: var(--texte);
+  font-family: var(--corps);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Halos lumineux flous en arriere-plan (atmosphere) */
+.halo {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+.halo-1 {
+  width: 480px; height: 480px;
+  background: rgba(255, 59, 71, 0.18);
+  top: -180px; right: -120px;
+}
+.halo-2 {
+  width: 420px; height: 420px;
+  background: rgba(78, 168, 255, 0.10);
+  bottom: -200px; left: -140px;
+}
+
+/* ---- Conteneur ---- */
+.conteneur {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 26px 28px 40px;
+}
+
+/* ============================================================
+   EN-TETE
+   ============================================================ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--bordure);
+  margin-bottom: 26px;
+}
+
+.marque { display: flex; align-items: center; gap: 13px; }
+
+.marque-logo {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, var(--rouge), var(--rouge-sombre));
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 22px rgba(255, 59, 71, 0.35);
+}
+
+.marque-nom {
+  font-family: var(--titre);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+.marque-nom span { color: var(--rouge); }
+
+.marque-tagline {
+  font-size: 11.5px;
+  color: var(--texte-faible);
+  margin-top: 1px;
+}
+
+/* Badge de statut (haut a droite) */
+.badge-statut {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  padding: 9px 16px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--texte-doux);
+}
+.badge-statut.actif { border-color: rgba(37, 211, 102, 0.4); }
+.badge-statut.fini  { border-color: rgba(78, 168, 255, 0.4); }
+
+.point-statut {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--texte-faible);
+  flex-shrink: 0;
+}
+.point-statut.actif {
+  background: var(--vert);
+  box-shadow: 0 0 10px var(--vert);
+  animation: pulse 1.5s infinite;
+}
+.point-statut.fini { background: var(--bleu); box-shadow: 0 0 10px var(--bleu); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ============================================================
+   GRILLE PRINCIPALE
+   ============================================================ */
+.grille {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 22px;
+  align-items: start;
+}
+
+.colonne-gauche  { display: flex; flex-direction: column; gap: 16px; }
+.colonne-droite  { display: flex; flex-direction: column; gap: 14px; }
+
+/* Titre de section avec puce */
+.bloc-titre {
+  display: flex; align-items: center; gap: 9px;
+  margin-top: 2px;
+}
+.bloc-titre h2 {
+  font-family: var(--titre);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--texte-doux);
+}
+.puce {
+  width: 4px; height: 14px;
+  background: var(--rouge);
+  border-radius: 2px;
+}
+.mode-actif {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--texte-faible);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid var(--bordure);
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   ECRAN (zone video / image)
+   ============================================================ */
+.ecran {
+  position: relative;
+  background: #000;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+#media-rendu {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: none;
+}
+
+/* Ecran vide (accueil) */
+.ecran-vide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  background:
+    radial-gradient(circle at 50% 42%,
+      rgba(255, 59, 71, 0.06), transparent 60%),
+    var(--fond-2);
+}
+.ecran-vide-icone { color: var(--texte-faible); opacity: 0.7; }
+.ecran-vide-titre {
+  font-family: var(--titre);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texte-doux);
+}
+.ecran-vide-texte {
+  font-size: 12.5px;
+  color: var(--texte-faible);
+  text-align: center;
+  line-height: 1.7;
+}
+
+/* Banniere d'alerte infraction */
+.alerte {
+  position: absolute;
+  top: 14px; left: 14px; right: 14px;
+  display: none;
+  align-items: center; gap: 10px;
+  background: rgba(255, 59, 71, 0.16);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--rouge);
+  border-radius: var(--rayon-s);
+  padding: 11px 15px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd2d4;
+}
+.alerte.visible { display: flex; animation: surgir 0.3s ease; }
+.alerte-point {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--rouge);
+  box-shadow: 0 0 10px var(--rouge);
+  animation: pulse 0.6s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Barre de progression de la video (en bas de l'ecran) */
+.barre-video {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+.barre-video.visible { display: block; }
+.barre-video-jauge {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--rouge), var(--orange));
+  transition: width 0.25s ease;
+}
+
+/* Message d'erreur */
+.erreur {
+  display: none;
+  background: rgba(255, 59, 71, 0.1);
+  border: 1px solid rgba(255, 59, 71, 0.35);
+  border-radius: var(--rayon-s);
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #ffb3b6;
+}
+.erreur.visible { display: block; }
+
+/* ============================================================
+   PANNEAU DE CONTROLE
+   ============================================================ */
+.controles {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 20px;
+  display: flex; flex-direction: column;
+  gap: 15px;
+}
+
+.controles-entete {
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+
+.etiquette {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--texte-faible);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+/* Bascule Video / Image */
+.bascule {
+  display: flex;
+  background: var(--fond-2);
+  border: 1px solid var(--bordure);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 3px;
+}
+.bascule-btn {
+  border: none;
+  background: transparent;
+  color: var(--texte-faible);
+  font-family: var(--corps);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.bascule-btn.actif {
+  background: var(--rouge);
+  color: #fff;
+}
+
+/* Zone de depot de fichier */
+.depot {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px;
+  border: 1.6px dashed var(--bordure-vive);
+  border-radius: var(--rayon-s);
+  padding: 26px 18px;
+  background: var(--fond-2);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.depot:hover {
+  border-color: var(--rouge);
+  background: rgba(255, 59, 71, 0.04);
+}
+.depot.charge {
+  border-color: var(--vert);
+  border-style: solid;
+  background: rgba(37, 211, 102, 0.05);
+}
+.depot input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+}
+.depot-icone { color: var(--texte-doux); }
+.depot.charge .depot-icone { color: var(--vert); }
+.depot-texte {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texte);
+}
+.depot-formats {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--texte-faible);
+  letter-spacing: 0.5px;
+}
+.depot-nom {
+  display: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--vert);
+  margin-top: 3px;
+  word-break: break-all;
+}
+.depot.charge .depot-nom { display: block; }
+
+/* Barre de progression de l'upload */
+.upload-barre {
+  height: 5px;
+  background: var(--fond-2);
+  border-radius: 4px;
+  overflow: hidden;
+  display: none;
+}
+.upload-barre.visible { display: block; }
+.upload-jauge {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--rouge), var(--orange));
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+/* Boutons d'action */
+.boutons { display: flex; gap: 10px; }
+
+.btn {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: var(--rayon-s);
+  font-family: var(--titre);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-principal {
+  background: linear-gradient(150deg, var(--rouge), var(--rouge-sombre));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255, 59, 71, 0.28);
+}
+.btn-principal:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 26px rgba(255, 59, 71, 0.4);
+}
+.btn-principal:disabled {
+  background: var(--surface-2);
+  color: var(--texte-faible);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-secondaire {
+  flex: 0 0 auto;
+  background: var(--surface-2);
+  color: var(--texte-doux);
+  border: 1px solid var(--bordure);
+}
+.btn-secondaire:hover {
+  color: var(--texte);
+  border-color: var(--bordure-vive);
+}
+
+/* Style premium pour le bouton pause actif (couleur orange ambré type feu de signalisation orange) */
+#btn-pause.pause-active {
+  background: rgba(255, 159, 64, 0.12);
+  color: var(--orange);
+  border-color: rgba(255, 159, 64, 0.4);
+  box-shadow: 0 0 14px rgba(255, 159, 64, 0.15);
+  animation: pulse-orange 2s infinite ease-in-out;
+}
+
+#btn-pause.pause-active:hover {
+  background: rgba(255, 159, 64, 0.2);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+#btn-pause:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@keyframes pulse-orange {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 159, 64, 0.15);
+    border-color: rgba(255, 159, 64, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 159, 64, 0.35);
+    border-color: rgba(255, 159, 64, 0.8);
+  }
+}
+
+/* ============================================================
+   COLONNE DROITE : CARTES
+   ============================================================ */
+.carte {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 17px;
+}
+
+/* Carte panneau Stop */
+.carte-stop {
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.35s;
+}
+.carte-stop.detecte { border-color: rgba(255, 59, 71, 0.45); }
+
+.carte-stop-icone {
+  width: 50px; height: 50px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--texte-faible);
+  transition: all 0.35s;
+}
+.carte-stop.detecte .carte-stop-icone {
+  background: rgba(255, 59, 71, 0.15);
+  color: var(--rouge);
+  box-shadow: 0 0 20px rgba(255, 59, 71, 0.3);
+}
+.carte-stop-titre {
+  font-family: var(--titre);
+  font-size: 15px;
+  font-weight: 700;
+}
+.carte-stop-sous {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--texte-faible);
+  margin-top: 3px;
+}
+.carte-stop.detecte .carte-stop-sous { color: var(--rouge); }
+
+/* Compteurs */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 18px 16px;
+}
+.stat-danger { border-color: rgba(255, 59, 71, 0.22); }
+.stat-succes { border-color: rgba(37, 211, 102, 0.22); }
+
+.stat-chiffre {
+  font-family: var(--titre);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+.stat-danger .stat-chiffre { color: var(--rouge); }
+.stat-succes .stat-chiffre { color: var(--vert); }
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--texte-faible);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-top: 8px;
+}
+
+/* Mini-statistique (vehicules suivis) */
+.mini-stat {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-s);
+  padding: 12px 16px;
+}
+.mini-stat-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--texte-faible);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.mini-stat-valeur {
+  font-family: var(--titre);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--bleu);
+}
+
+/* Historique */
+.historique {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+.historique-vide {
+  margin: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--texte-faible);
+  text-align: center;
+}
+
+.evenement {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 4px;
+  border-bottom: 1px solid var(--bordure);
+  animation: glisser 0.3s ease;
+}
+.evenement:last-child { border-bottom: none; }
+
+@keyframes glisser {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.evenement-point {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.evenement-point.infraction { background: var(--rouge); }
+.evenement-point.respecte   { background: var(--vert); }
+
+.evenement-texte {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.evenement-texte.infraction { color: #ff8a90; }
+.evenement-texte.respecte   { color: #6fe6a0; }
+
+.evenement-heure {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--texte-faible);
+}
+
+/* Animation "rebond" sur les compteurs qui changent */
+.rebond { animation: rebond 0.4s ease; }
+@keyframes rebond {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   PIED DE PAGE
+   ============================================================ */
+footer {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--bordure);
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--texte-faible);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   RESPONSIVE (ecrans etroits)
+   ============================================================ */
+@media (max-width: 940px) {
+  .grille { grid-template-columns: 1fr; }
+  .conteneur { padding: 20px 16px 32px; }
+  header { flex-wrap: wrap; gap: 14px; }
+}
